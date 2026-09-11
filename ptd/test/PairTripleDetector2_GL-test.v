@@ -61,6 +61,52 @@ module Top();
     end
   endtask
 
+    logic [2:0] random_a;
+  logic [2:0] random_b;
+  logic       random_out;
+  int         random_a_num_ones;
+  int         random_b_num_ones;
+
+  task test_case_4_random();
+    t.test_case_begin( "test_case_4_random" );
+
+    // Generate 20 random input values
+
+    for ( int i = 0; i < 20; i = i+1 ) begin
+
+      // Generate a 3-bit random value for both a and b
+
+      random_a = 3'($urandom(t.seed));
+      random_b = 3'($urandom(t.seed));
+
+      // Calculate the number of ones in random value a
+
+      random_a_num_ones = 0;
+      for ( int j = 0; j < 3; j = j+1 ) begin
+        if ( random_a[j] )
+          random_a_num_ones = random_a_num_ones + 1;
+      end
+
+      // Calculate the number of ones in random value b
+
+      random_b_num_ones = 0;
+      for ( int j = 0; j < 3; j = j+1 ) begin
+        if ( random_b[j] )
+          random_b_num_ones = random_b_num_ones + 1;
+      end
+
+      // Calculate the correct output value
+
+      random_out = (random_a_num_ones > 1) || (random_b_num_ones > 1);
+
+      // Apply the random input values and check the output value
+
+      check( random_a, random_b, random_out );
+
+    end
+
+    t.test_case_end();
+  endtask
   //----------------------------------------------------------------------
   // test_case_1_basic
   //----------------------------------------------------------------------
@@ -104,9 +150,13 @@ module Top();
   task test_case_3_few_ones();
     t.test_case_begin( "test_case_3_few_ones" );
 
-    //''' ACTIVITY '''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    // Add checks for case where both inputs have only 0-1 ones
-    //>'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    //     a       b       out
+    check( 3'b001, 3'b001, 0 );
+    check( 3'b010, 3'b001, 0 );
+    check( 3'b100, 3'b001, 0 );
+    check( 3'b010, 3'b001, 0 );
+    check( 3'b010, 3'b010, 0 );
+    check( 3'b010, 3'b100, 0 );
 
     t.test_case_end();
   endtask
@@ -125,6 +175,7 @@ module Top();
     if ((t.n <= 0) || (t.n == 1)) test_case_1_basic();
     if ((t.n <= 0) || (t.n == 2)) test_case_2_many_ones();
     if ((t.n <= 0) || (t.n == 3)) test_case_3_few_ones();
+    if ((t.n <= 0) || (t.n == 4)) test_case_4_random();
 
     //''' ACTIVITY '''''''''''''''''''''''''''''''''''''''''''''''''''''''
     // Add new test case for random testing to the list of test cases

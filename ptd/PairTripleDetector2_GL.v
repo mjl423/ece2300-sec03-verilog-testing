@@ -15,14 +15,26 @@ module PairTripleDetector2_GL
   output wire       out
 );
 
-  //''' ACTIVITY '''''''''''''''''''''''''''''''''''''''''''''''''''''''
-  // Instantiate two PairTripleDetector modules and connect to OR gate
-  //>'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+  wire out_a;
+  wire out_b;
 
-  // remove these lines before starting your implementation
-  `ECE2300_UNUSED( a );
-  `ECE2300_UNUSED( b );
-  `ECE2300_FLOATING( out );
+  PairTripleDetector_GL detector_a
+  (
+    .in0 (a[0]),
+    .in1 (a[1]),
+    .in2 (a[2]),
+    .out (out_a)
+  );
+
+  PairTripleDetector_GL detector_b
+  (
+    .in0 (b[0]),
+    .in1 (b[1]),
+    .in2 (b[2]),
+    .out (out_b)
+  );
+
+  or (out, out_a, out_b);
 
 endmodule
 
